@@ -1,0 +1,15 @@
+lockfileVersion: 5.4
+
+importers:
+
+  .:
+    specifiers: {}
+
+  examples/app:
+    specifiers:
+      tutu-cli: workspace:*
+    dependencies:
+      tutu-cli: link:../../packages/tutu-cli
+
+  packages/tutu-cli:
+    specifiers: {}
