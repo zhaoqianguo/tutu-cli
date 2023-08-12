@@ -3,7 +3,8 @@ const prosess = require('process');
 const path = require('path');
 const yargs = require('yargs');
 const { inquirerPrompt } = require('./inquirer');
-const { checkMkdirExists, copyDir, copyFile } = require('./copy');
+const { checkMkdirExists, copyDir, copyFile, copyTemplateFile } = require('./copy');
+const install = require('./nodeExec');
 
 yargs.command(
   ['create', 'c'],
@@ -33,12 +34,20 @@ yargs.command(
     }
 
     // copyDir(path.resolve(__dirname, `../../template/${type}`), path.resolve(process.cwd(), `./src/pages/${name}`));
-    copyFile(
-      path.resolve(__dirname, `../../template/${type}/index.js`),
-      path.resolve(process.cwd(), `./src/pages/${name}/index.js`)
+    // copyFile(
+    //   path.resolve(__dirname, `../../template/${type}/index.js`),
+    //   path.resolve(process.cwd(), `./src/pages/${name}/index.js`)
+    // );
+
+    copyTemplateFile(
+      path.resolve(__dirname, `../../template/${type}/index.tpl`),
+      path.resolve(process.cwd(), `./src/pages/${name}/index.js`),
+      { name }
     );
 
-    console.log(path.resolve(__dirname, `../../template/${type}`), path.resolve(process.cwd(), `./src/pages/${name}`));
+    install(process.cwd(), answers);
+
+    // console.log(path.resolve(__dirname, `../../template/${type}`), path.resolve(process.cwd(), `./src/pages/${name}`));
   }
 ).argv;
 

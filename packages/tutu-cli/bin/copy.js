@@ -1,6 +1,7 @@
 const copydir = require('copy-dir');
 const path = require('path');
 const fs = require('fs');
+const mustache = require('mustache');
 
 // 复制目录
 function copyDir(from, to, options) {
@@ -33,12 +34,31 @@ function mkdirp(dir) {
 
 // 拷贝文件
 function copyFile(from, to) {
-  const buffer = fs.readFileSync(from, 'utf8');
+  const fileStr = fs.readFileSync(from, 'utf-8');
   const parentPath = path.dirname(to);
 
   mkdirGuard(parentPath);
+  fs.writeFileSync(to, fileStr);
+}
 
-  fs.writeFileSync(to, buffer);
+// 读取模版文件
+function readTemplateFile(path, view = {}) {
+  const templateStr = fs.readFileSync(path, 'utf-8');
+  console.log(path);
+
+  return mustache.render(templateStr, view);
+}
+
+// 拷贝模版文件
+function copyTemplateFile(from, to, view = {}) {
+  // 非模版文件直接拷贝
+  if (path.extname(from) !== '.tpl') {
+    return copyFile(from, to);
+  }
+  const parentPath = path.dirname(to);
+
+  mkdirGuard(parentPath);
+  fs.writeFileSync(to, readTemplateFile(from, view));
 }
 
 module.exports = {
@@ -46,4 +66,5 @@ module.exports = {
   checkMkdirExists,
   mkdirGuard,
   copyFile,
+  copyTemplateFile,
 };
